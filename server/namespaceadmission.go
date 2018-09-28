@@ -13,7 +13,6 @@ func (*NamespaceAdmission) HandleAdmission(review *v1beta1.AdmissionReview) erro
 	logrus.Debugln(review.Request)
 	review.Response = &v1beta1.AdmissionResponse{
 		Allowed: true,
-		UID: review.Request.UID,
 		Result: &v1.Status{
 			Message: "Welcome aboard!",
 		},

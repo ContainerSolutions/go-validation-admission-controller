@@ -15,8 +15,6 @@ import (
 )
 
 var (
-	//Scheme          = runtime.NewScheme()
-	//Codecs          = serializer.NewCodecFactory(Scheme)
 	AdmissionRequestNS = v1beta1.AdmissionReview{
 		TypeMeta: v1.TypeMeta{
 			Kind: "AdmissionReview",
@@ -38,16 +36,10 @@ var (
 	}
 )
 
-type DummyAdmissionController struct{}
-
-func (*DummyAdmissionController) HandleAdmission(review *v1beta1.AdmissionReview) error {
-	return nil
-}
-
 func decodeResponse(body io.ReadCloser) *v1beta1.AdmissionReview {
 	response, _ := ioutil.ReadAll(body)
 	review := &v1beta1.AdmissionReview{}
-	Codecs.UniversalDeserializer().Decode(response, nil, review)
+	codecs.UniversalDeserializer().Decode(response, nil, review)
 	return review
 }
 
@@ -64,14 +56,10 @@ func TestServeReturnsCorrectJson(t *testing.T) {
 	server := httptest.NewServer(GetAdmissionServerNoSSL(nsc, ":8080").Handler)
 	requestString := string(encodeRequest(&AdmissionRequestNS))
 	myr := strings.NewReader(requestString)
-	logrus.Println(requestString)
 	r, _ := http.Post(server.URL, "application/json", myr)
 	review := decodeResponse(r.Body)
 
 	if review.Request.UID != AdmissionRequestNS.Request.UID {
 		t.Error("Request and response UID don't match")
 	}
-
-	logrus.Println(review)
-
 }

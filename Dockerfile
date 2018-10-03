@@ -3,8 +3,9 @@ FROM golang:1.11.0-alpine as builder
 RUN apk update && apk add git && apk add ca-certificates
 
 WORKDIR /validation-admission-controllers-go
+
 COPY . .
-RUN ls -lta ./vendor/github.com
+
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/validation-admission-controllers-go
 
 # Runtime image

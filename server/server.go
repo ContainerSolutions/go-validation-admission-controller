@@ -13,14 +13,10 @@ import (
 )
 
 var (
-	Scheme          = runtime.NewScheme()
-	Codecs          = serializer.NewCodecFactory(Scheme)
+	scheme          = runtime.NewScheme()
+	codecs          = serializer.NewCodecFactory(scheme)
 	tlscert, tlskey string
 )
-
-func init() {
-
-}
 
 type AdmissionController interface {
 	HandleAdmission(review *v1beta1.AdmissionReview) error
@@ -54,7 +50,7 @@ func GetAdmissionServerNoSSL(ac AdmissionController, listenOn string) *http.Serv
 	server := &http.Server{
 		Handler: &AdmissionControllerServer{
 			AdmissionController: ac,
-			Decoder:             Codecs.UniversalDeserializer(),
+			Decoder:             codecs.UniversalDeserializer(),
 		},
 		Addr: listenOn,
 	}

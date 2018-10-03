@@ -1,5 +1,6 @@
 #!/bin/bash
 title="namespace-admission"
+kubectl create namespace namespace-admission || true
 
 [ -z ${title} ] && service=sidecar-injector-webhook-svc
 [ -z ${title} ] && secret=sidecar-injector-webhook-certs
